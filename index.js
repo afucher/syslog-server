@@ -41,6 +41,7 @@ MongoClient.connect(url, function(err, db) {
 
 var server = net.createServer(function (socket) {
 	console.log("connection...");
+	socket.on('error', function() { console.log("error"); });
 	socket.on('data', function(data) {
 		try {
 			var info = SyslogParser.parse(data.toString());
