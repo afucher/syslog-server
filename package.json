@@ -9,6 +9,8 @@
   "author": "Arthur fucher",
   "license": "BSD-2-Clause",
   "dependencies": {
-    "mongodb": "~1.4.26"
+    "mongodb": "~1.4.26",
+    "express": "~4.10.6",
+    "ejs": "~1.0.0"
   }
 }

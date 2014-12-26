@@ -2,6 +2,31 @@ var net = require('net');
 var SyslogParser = require("./parser/SyslogParser");
 var MongoClient = require('mongodb').MongoClient;
 var useMongo = false;
+var express = require('express')
+var app = express()
+
+//Configura Express
+app.use(express.static(__dirname +'/public'));
+app.engine('html', require('ejs').renderFile);
+
+app.get('/', function (req, res) {
+  res.render('index.html');
+})
+
+app.post('/logs', function(req, res) {
+	if(useMongo){
+		var coll = MongoDB.collection('logs');
+		var cursor = coll.find({}).sort([['datetime',-1]]).limit(10);
+		console.log(req.query);
+		cursor.toArray(function(err, items){
+			var retorno = {};
+			retorno["Result"] = "OK";
+			retorno["Records"] = items;
+			res.contentType('json');
+			res.end(JSON.stringify(retorno));
+		});
+	}
+});
 
 //MongoDB connection
 var url = 'mongodb://localhost:27017/syslog';
@@ -32,4 +57,13 @@ var server = net.createServer(function (socket) {
 	});
 });
 
-server.listen(8083);
+server.listen(8083, function(){
+	var server = app.listen(3000, function () {
+
+		var host = server.address().address
+		var port = server.address().port
+
+		console.log('Example app listening at http://%s:%s', host, port)
+
+	});
+});
