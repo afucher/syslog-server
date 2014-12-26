@@ -8,4 +8,7 @@
   },
   "author": "Arthur fucher",
   "license": "BSD-2-Clause",
+  "dependencies": {
+    "mongodb": "~1.4.26"
+  }
 }
