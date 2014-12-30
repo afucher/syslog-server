@@ -1,5 +1,5 @@
 log
-  = header:header prival:prival version:version datetime:datetime space hostname:hostname space appname:appname space procid:procid space msgid:msgid space message:message? space? freeMessage:freeMessage? {return {"header":header,"prival":prival,"version":version,"datetime":datetime,"hostname":hostname,"appname":appname,"procid":procid,"msgid":msgid,"message":message,"freeMessage":freeMessage };}
+  = header:header prival:prival version:version datetime:datetime space hostname:hostname space appname:appname space procid:procid space msgid:msgid space message:(message/"-")? space? freeMessage:freeMessage? {return {"header":header,"prival":prival,"version":version,"datetime":datetime,"hostname":hostname,"appname":appname,"procid":procid,"msgid":msgid,"message":message,"freeMessage":freeMessage };}
 
 header
   = header:Numbers space {return header;}
@@ -18,7 +18,17 @@ procid = Numbers
 
 msgid = text:word / text:"-" {return text == "-" ? "-" : text.join("");}
 
-message = ("[" text:myText "]") /  text:"-" {return text;}
+message = ("[" sdid:word params:spacepair+ "]") {return {"sdid":sdid[0], "sdparams":params};}
+
+spacepair = space pair:pair {return pair;}
+
+pair = param:word "=" value:QuotedString {return {"param":param[0], "value":value};}
+
+QuotedString
+  = '"' quote: NotQuote* '"' {return quote.join("")}
+
+NotQuote
+  = !'"' char: . {return char}
 
 myText = text:(word / space / Symbols)* {return text.join("");}
 
