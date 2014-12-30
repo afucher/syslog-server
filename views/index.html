@@ -18,15 +18,27 @@
 	<body>
 		<h1>Syslog Server </h1>
 		
-		<div id="LogContainer"></div>
+		<div class="filtering">
+    <form>
+        sdid: <input type="text" name="sdid" id="sdid" />
+				transactionId: <input type="text" name="transactionId" id="transactionId" />
+				group: <input type="text" name="group" id="group" />
+				category: <input type="text" name="category" id="category" />
+        <button type="submit" id="LoadRecordsButton">Filter</button>
+    </form>
+</div>
+		
+		<div class="container">
+			<div id="LogContainer"></div>
+		</div>
 		
 		
 		
 		<script type="text/javascript">
+		var options = {}
     $(document).ready(function () {
         $('#LogContainer').jtable({
             title: 'Table of log',
-						sorting: true,
             actions: {
                 listAction: '\logs'
             },
@@ -47,13 +59,41 @@
                     title: 'Mensagem Livre',
                     width: '40%'
                 },
+								sdid:{
+								  title: 'SDID',
+                  width: '10%',
+									display: function (data) {
+										return data.record.message.sdid;
+									}
+								},
                 message: {
                     title: 'Mensagem',
-                    width: '10%'
+                    width: '10%',
+										display: function (data) {
+											return JSON.stringify(data.record.message.sdparams);
+										}
                 }
             }
         });
-			window.setInterval( function(){$('#LogContainer').jtable('load');}, 5000);
+			window.setInterval( function(){$('#LogContainer').jtable('load',options);}, 1000);
+			
+			        //Re-load records when user click 'load records' button.
+        $('#LoadRecordsButton').click(function (e) {
+            e.preventDefault();
+						options = {};
+						if(!isEmpty($('#sdid'))) options["sdid"] = $('#sdid').val();
+						if(!isEmpty($('#transactionId'))) options["transactionId"] = $('#transactionId').val();
+						if(!isEmpty($('#group'))) options["group"] = $('#group').val();
+						if(!isEmpty($('#category'))) options["category"] = $('#category').val();
+						
+            $('#LogContainer').jtable('load', options);
+        });
+				
+				function isEmpty(input){
+					if(input.val() == "")
+						return true;
+					return false;
+				}
 			
     });
 		

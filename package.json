@@ -11,6 +11,7 @@
   "dependencies": {
     "mongodb": "~1.4.26",
     "express": "~4.10.6",
-    "ejs": "~1.0.0"
+    "ejs": "~1.0.0",
+    "body-parser": "~1.10.0"
   }
 }
